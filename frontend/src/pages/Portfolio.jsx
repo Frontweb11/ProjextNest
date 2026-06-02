@@ -63,9 +63,9 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/users/portfolio/${id}`,
-        );
+        const API = axios.create({
+          baseURL: import.meta.env.VITE_API_URL,
+        });
         setData(res.data);
       } catch (err) {
         console.error("Error fetching portfolio:", err);
