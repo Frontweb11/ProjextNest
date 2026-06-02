@@ -8,9 +8,21 @@ dotenv.config();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  "https://projext-nest.vercel.app",
+  "https://projext-nest-git-main-frontweb11s-projects.vercel.app",
+  // you can also add a wildcard for preview deployments if needed
+];
+
 app.use(
   cors({
-    origin: "https://projext-nest.vercel.app",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
