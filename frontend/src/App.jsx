@@ -28,7 +28,7 @@ function App() {
   return (
     <AuthProvider>
       <Toaster position="top-right" />
-
+      <Route path="/" element={<Explore />} />
       <Routes>
         {/* ================= PUBLIC PATHS (NO AUTH NEEDED) ================= */}
         {/* Landing Page: Anyone can search and explore developer profiles */}
