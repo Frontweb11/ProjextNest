@@ -68,6 +68,13 @@ const login = async (req, res) => {
       role: user.role,
       token: generateToken(user._id),
     });
+    // In your login controller (backend)
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // Must be true for cross-site cookies (requires HTTPS)
+      sameSite: "none", // Crucial for cross-origin requests
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

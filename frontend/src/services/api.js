@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, // ✅ IMPORTANT (fix auth issues later if cookies used)
+  withCredentials: true,
 });
 
 // ======================
