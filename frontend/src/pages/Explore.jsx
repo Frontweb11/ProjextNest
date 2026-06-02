@@ -24,18 +24,25 @@ const Explore = () => {
     const fetchProfiles = async () => {
       try {
         setLoading(true);
+
         const API = axios.create({
           baseURL: import.meta.env.VITE_API_URL,
         });
-        const data = res.data;
+
+        const res = await API.get("/users/public-profiles"); // ✅ FIXED
+
+        const data = res.data || [];
+
         setProfiles(data);
         setFilteredProfiles(data);
+
         const total = data.length;
         const avgRating = total
           ? (
               data.reduce((sum, p) => sum + (p.rating || 4.5), 0) / total
             ).toFixed(1)
           : 0;
+
         setStats({ total, avgRating });
       } catch (err) {
         console.error("Error loading developer directory:", err);
@@ -43,6 +50,7 @@ const Explore = () => {
         setLoading(false);
       }
     };
+
     fetchProfiles();
   }, []);
 
