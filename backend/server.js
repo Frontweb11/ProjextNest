@@ -9,6 +9,7 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
+  "http://localhost:5173",
   "https://projext-nest.vercel.app",
   "https://projext-nest-git-main-frontweb11s-projects.vercel.app",
   // you can also add a wildcard for preview deployments if needed
