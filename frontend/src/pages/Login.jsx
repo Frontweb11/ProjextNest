@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   EnvelopeIcon,
@@ -15,6 +15,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the page the user tried to visit before being redirected to login
+  const from = location.state?.from || "/dashboard";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +26,13 @@ const Login = () => {
     setLoading(true);
     try {
       const user = await login(email, password);
-      navigate(user.role === "admin" ? "/admin/dashboard" : "/dashboard");
+      // If the original destination is a protected page (like /resume/builder),
+      // go there; otherwise fallback to role-based dashboard.
+      if (from && from !== "/login" && from !== "/register") {
+        navigate(from);
+      } else {
+        navigate(user.role === "admin" ? "/admin/dashboard" : "/dashboard");
+      }
     } catch (err) {
       // error handled in context
     } finally {
@@ -165,7 +175,7 @@ const Login = () => {
                 </Link>
               </p>
 
-              {/* Demo credentials hint (optional, for easier testing) */}
+              {/* Demo credentials hint */}
               <div className="mt-6 p-3 bg-white/5 rounded-lg text-xs text-indigo-300 text-center">
                 Demo: admin@example.com / admin123 &nbsp;|&nbsp; Create an
                 intern account via "Create account"

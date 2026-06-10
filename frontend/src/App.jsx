@@ -14,6 +14,10 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
 
+// Resume Builder Pages (new)
+import ResumeBuilder from "./pages/ResumeBuilder";
+import ResumeTemplates from "./pages/ResumeTemplates";
+
 // Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UsersManagement from "./pages/admin/UsersManagement";
@@ -31,13 +35,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Explore />} />
         {/* ================= PUBLIC PATHS (NO AUTH NEEDED) ================= */}
-        {/* Landing Page: Anyone can search and explore developer profiles */}
         <Route path="/explore" element={<Explore />} />
-
-        {/* Individual Portfolio View: Anyone can see bio and project snippets */}
         <Route path="/portfolio/:id" element={<Portfolio />} />
-
-        {/* Auth portals */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -50,7 +49,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/projects"
           element={
@@ -61,7 +59,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/projects/new"
           element={
@@ -70,8 +67,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* This deep-dive project detail page is fully locked down behind the gatekeeper */}
         <Route
           path="/projects/:id"
           element={
@@ -80,12 +75,29 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= RESUME BUILDER ROUTES ================= */}
+        <Route
+          path="/resume/builder"
+          element={
+            <ProtectedRoute>
+              <ResumeBuilder />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/resume/templates"
+          element={
+            <ProtectedRoute>
+              <ResumeTemplates />
             </ProtectedRoute>
           }
         />
@@ -99,7 +111,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/admin/users"
           element={
@@ -108,7 +119,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/admin/projects"
           element={
@@ -117,7 +127,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/admin/analytics"
           element={

@@ -58,25 +58,33 @@ const login = async (req, res) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
     }
 
-    res.json({
+    const token = generateToken(user._id);
+
+    // Set cookie BEFORE sending response
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
-      token: generateToken(user._id),
-    });
-    // In your login controller (backend)
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true, // Must be true for cross-site cookies (requires HTTPS)
-      sameSite: "none", // Crucial for cross-origin requests
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      token,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("LOGIN ERROR:", error);
+    return res.status(500).json({
+      message: "Server error during login",
+    });
   }
 };
 

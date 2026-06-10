@@ -10,6 +10,8 @@ import {
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
+  DocumentTextIcon,
+  MagnifyingGlassIcon, // 👈 Import for Explore
 } from "@heroicons/react/24/outline";
 
 const Layout = ({ children }) => {
@@ -25,11 +27,23 @@ const Layout = ({ children }) => {
         { name: "All Projects", href: "/admin/projects", icon: FolderIcon },
         { name: "Users", href: "/admin/users", icon: UsersIcon },
         { name: "Analytics", href: "/admin/analytics", icon: ChartBarIcon },
+        {
+          name: "Resume Builder",
+          href: "/resume/builder",
+          icon: DocumentTextIcon,
+        },
+        { name: "Explore", href: "/explore", icon: MagnifyingGlassIcon }, // 👈 Added
         { name: "Profile", href: "/profile", icon: UserIcon },
       ]
     : [
         { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
         { name: "My Projects", href: "/projects", icon: FolderIcon },
+        {
+          name: "Resume Builder",
+          href: "/resume/builder",
+          icon: DocumentTextIcon,
+        },
+        { name: "Explore", href: "/explore", icon: MagnifyingGlassIcon }, // 👈 Added
         { name: "Profile", href: "/profile", icon: UserIcon },
       ];
 
@@ -50,7 +64,9 @@ const Layout = ({ children }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-30 h-full w-64 bg-white/10 backdrop-blur-xl border-r border-white/20 shadow-xl transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 z-30 h-full w-64 bg-white/10 backdrop-blur-xl border-r border-white/20 shadow-xl transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-white/20">
           <div className="flex items-center gap-2">

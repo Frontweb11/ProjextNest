@@ -10,6 +10,7 @@ import {
   Code,
   Briefcase,
   Users,
+  FileText,
 } from "lucide-react";
 
 const Explore = () => {
@@ -24,13 +25,8 @@ const Explore = () => {
     const fetchProfiles = async () => {
       try {
         setLoading(true);
-
-        const API = axios.create({
-          baseURL: import.meta.env.VITE_API_URL,
-        });
-
-        const res = await API.get("/users/public-profiles"); // ✅ FIXED
-
+        const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+        const res = await API.get("/users/public-profiles");
         const data = res.data || [];
 
         setProfiles(data);
@@ -42,7 +38,6 @@ const Explore = () => {
               data.reduce((sum, p) => sum + (p.rating || 4.5), 0) / total
             ).toFixed(1)
           : 0;
-
         setStats({ total, avgRating });
       } catch (err) {
         console.error("Error loading developer directory:", err);
@@ -50,7 +45,6 @@ const Explore = () => {
         setLoading(false);
       }
     };
-
     fetchProfiles();
   }, []);
 
@@ -75,7 +69,6 @@ const Explore = () => {
   const getRandomViews = () => Math.floor(Math.random() * 300) + 50;
   const getRandomRating = () => (Math.random() * 1.5 + 3.5).toFixed(1);
 
-  // Check if user is logged in (optional – hide buttons if logged in)
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
 
@@ -99,14 +92,24 @@ const Explore = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#2e1065] text-gray-100">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
         {/* Top Navigation Bar */}
-        <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/10">
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-8 pb-4 border-b border-white/10">
           <Link
             to="/"
             className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-400"
           >
             InternFlow
           </Link>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            {/* ✨ New Resume Builder Button (prominent, gradient) */}
+            <Link
+              to="/resume/builder"
+              className="relative group px-5 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 overflow-hidden"
+            >
+              <FileText className="w-4 h-4" />
+              <span>Build Resume</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            </Link>
+
             {!isLoggedIn ? (
               <>
                 <Link
@@ -133,7 +136,7 @@ const Explore = () => {
           </div>
         </div>
 
-        {/* Hero Section */}
+        {/* Hero Section with Resume CTA */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 border border-white/10 mb-6">
             <Users className="w-4 h-4 text-purple-400" />
@@ -148,6 +151,25 @@ const Explore = () => {
             Explore portfolios of passionate developers, see their projects, and
             connect with the next generation of tech innovators.
           </p>
+
+          {/* ✨ Hero CTA Buttons (including Resume Builder) */}
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
+            <Link
+              to="/resume/builder"
+              className="group relative px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 overflow-hidden"
+            >
+              <FileText className="w-5 h-5" />
+              <span>Build Your Resume</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            </Link>
+            <Link
+              to="/explore"
+              className="px-6 py-3 bg-white/10 backdrop-blur-sm rounded-xl font-medium text-white hover:bg-white/20 transition"
+            >
+              Browse Developers
+            </Link>
+          </div>
 
           <div className="flex justify-center gap-6 mt-6 text-sm">
             <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
