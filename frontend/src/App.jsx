@@ -13,6 +13,12 @@ import ProjectEditor from "./pages/ProjectEditor";
 import ProjectDetail from "./pages/ProjectDetail";
 import Profile from "./pages/Profile";
 import Portfolio from "./pages/Portfolio";
+import Courses from "./pages/courses/Courses";
+import CourseDetail from "./pages/courses/CourseDetail";
+import CourseLearn from "./pages/courses/CourseLearn";
+import CreateCourse from "./pages/courses/CreateCourse";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Resume Builder Pages (new)
 import ResumeBuilder from "./pages/ResumeBuilder";
@@ -39,7 +45,18 @@ function App() {
         <Route path="/portfolio/:id" element={<Portfolio />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route
+          path="/courses/create"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <CreateCourse />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/courses/:id" element={<CourseDetail />} />
+        <Route path="/courses/:id/learn" element={<CourseLearn />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* ================= PRIVATE PATHS (LOGIN REQUIRED) ================= */}
         <Route
           path="/dashboard"
@@ -80,6 +97,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute>
+              <Courses />
             </ProtectedRoute>
           }
         />

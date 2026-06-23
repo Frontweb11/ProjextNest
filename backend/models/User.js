@@ -79,9 +79,21 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
+
     isActive: {
       type: Boolean,
       default: true,
+    },
+
+    // ─── Forgot Password Fields ──────────────────────────────────────────────
+    resetPasswordToken: {
+      type: String,
+      default: null,
+      index: true, // for faster lookups
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
     },
   },
   {
@@ -98,12 +110,6 @@ const userSchema = new mongoose.Schema(
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
-
-// Hash password before saving (only when modified)
-// ─── Middleware ───────────────────────────────────────────────────────────────
-
-// ✅ async keyword present
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);

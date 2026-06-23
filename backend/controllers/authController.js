@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto"); // 👈 for token generation
+const { sendResetEmail } = require("../utils/email"); // 👈 we'll create this
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -14,7 +16,6 @@ const register = async (req, res) => {
   try {
     const { name, email, password, role, bio, socialLinks } = req.body;
 
-    // ✅ VALIDATION (THIS FIXES YOUR ERROR)
     if (!name || !email || !password) {
       return res.status(400).json({
         message: "Name, email, and password are required",
@@ -44,7 +45,6 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error("Register Error:", error.message);
-
     res.status(500).json({ message: "Server error during registration" });
   }
 };
@@ -65,7 +65,6 @@ const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Set cookie BEFORE sending response
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -177,10 +176,74 @@ const uploadProfilePicture = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// ─── FORGOT PASSWORD ────────────────────────────────────────────────────────────
+
+// @desc    Request password reset
+// @route   POST /api/auth/forgot-password
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No account found with that email" });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpires = Date.now() + 3600000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpires;
+    await user.save();
+
+    // Build reset URL
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    await sendResetEmail(email, resetUrl);
+
+    res.json({ message: "Password reset link sent to your email" });
+  } catch (error) {
+    console.error("ForgotPassword Error:", error);
+    res.status(500).json({ message: "Failed to send reset email" });
+  }
+};
+
+// @desc    Reset password using token
+// @route   POST /api/auth/reset-password
+const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    // Set new password (pre-save hook will hash it)
+    user.password = password;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.json({ message: "Password reset successful. Please login." });
+  } catch (error) {
+    console.error("ResetPassword Error:", error);
+    res.status(500).json({ message: "Password reset failed" });
+  }
+};
+
 module.exports = {
   register,
   login,
   getProfile,
   updateProfile,
   uploadProfilePicture,
+  forgotPassword,
+  resetPassword,
 };

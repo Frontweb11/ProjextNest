@@ -62,6 +62,8 @@ export const authAPI = {
     API.post("/auth/upload-profile", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  forgotPassword: (data) => API.post("/auth/forgot-password", data),
+  resetPassword: (data) => API.post("/auth/reset-password", data),
 };
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
@@ -122,6 +124,22 @@ export const resumeAPI = {
       responseType: "blob", // binary PDF response
       timeout: 60_000, // PDF generation needs a longer timeout
     }),
+};
+
+export const courseAPI = {
+  getAll: () => API.get("/courses"),
+  getById: (id) => API.get(`/courses/${id}`),
+  create: (data) => API.post("/courses", data),
+  update: (id, data) => API.put(`/courses/${id}`, data),
+  delete: (id) => API.delete(`/courses/${id}`),
+  enroll: (id) => API.post(`/courses/${id}/enroll`),
+  addReview: (id, data) => API.post(`/courses/${id}/review`, data),
+  getMyCourses: () => API.get("/courses/my/enrolled"),
+  checkout: (id) => API.post(`/courses/${id}/checkout`),
+  verifyPayment: (sessionId) =>
+    API.post("/courses/verify-payment", { sessionId }),
+  markComplete: (courseId, lessonId) =>
+    API.post(`/courses/${courseId}/lessons/${lessonId}/complete`),
 };
 
 export default API;

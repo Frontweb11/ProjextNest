@@ -26,6 +26,7 @@ app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/resume", require("./routes/resumeRoutes"));
 app.use("/api", require("./routes/portfolioRoutes"));
+app.use("/api/courses", require("./routes/courseRoutes"));
 
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "Intern Project Showcase API is running" });
